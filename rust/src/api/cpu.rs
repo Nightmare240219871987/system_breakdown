@@ -2,6 +2,7 @@ use hwlocality::{
     object::{attributes::ObjectAttributes, types::ObjectType},
     Topology,
 };
+
 use std::thread::sleep;
 use std::time::Duration;
 use sysinfo::{self, System};
@@ -51,23 +52,70 @@ pub fn get_brand() -> String {
 }
 
 pub fn get_physical_cores() -> usize {
-    let info = cpu_info::CpuInfo::new();
-    let mut physical_cores: usize = 0;
-    match info.total_physical_cores {
-        Some(c) => physical_cores = c,
-        None => (),
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        let info = cpu_info::CpuInfo::new();
+        let mut physical_cores: usize = 0;
+        match info.total_physical_cores {
+            Some(c) => physical_cores = c,
+            None => (),
+        }
+        physical_cores
     }
-    physical_cores
+
+    #[cfg(target_os = "macos")]
+    {
+        use std::ffi::CString;
+        let cname = CString::new("hw.physicalcpu").ok().unwrap();
+
+        let mut value: i32 = 0;
+        let mut size = std::mem::size_of::<i32>();
+
+        unsafe {
+            libc::sysctlbyname(
+                cname.as_ptr(),
+                &mut value as *mut i32 as *mut libc::c_void,
+                &mut size,
+                std::ptr::null_mut(),
+                0,
+            )
+        };
+
+        value as usize
+    }
 }
 
 pub fn get_threads() -> usize {
-    let info = cpu_info::CpuInfo::new();
-    let mut threads: usize = 0;
-    match info.total_logical_cores {
-        Some(t) => threads = t,
-        None => (),
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        let info = cpu_info::CpuInfo::new();
+        let mut threads: usize = 0;
+        match info.total_logical_cores {
+            Some(t) => threads = t,
+            None => (),
+        }
+        threads
     }
-    threads
+    #[cfg(target_os = "macos")]
+    {
+        use std::ffi::CString;
+        let cname = CString::new("hw.logicalcpu").ok().unwrap();
+
+        let mut value: i32 = 0;
+        let mut size = std::mem::size_of::<i32>();
+
+        unsafe {
+            libc::sysctlbyname(
+                cname.as_ptr(),
+                &mut value as *mut i32 as *mut libc::c_void,
+                &mut size,
+                std::ptr::null_mut(),
+                0,
+            )
+        };
+
+        value as usize
+    }
 }
 
 pub fn get_l1_cache() -> (u64, usize) {
@@ -156,11 +204,14 @@ pub fn get_l3_cache() -> (u64, usize) {
 }
 
 pub fn get_hash_acceleration() -> bool {
-    cpufeatures::new!(cpu_sha, "sha");
-    let token: cpu_sha::InitToken = cpu_sha::init();
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        cpufeatures::new!(cpu_sha, "sha");
+        let token: cpu_sha::InitToken = cpu_sha::init();
 
-    if token.get() {
-        return true;
+        if token.get() {
+            return true;
+        }
     }
     false
 }

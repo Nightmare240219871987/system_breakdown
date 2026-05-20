@@ -1,0 +1,22 @@
+PODS:
+  - FlutterMacOS (1.0.0)
+  - rust_lib_system_breakdown (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - rust_lib_system_breakdown (from `Flutter/ephemeral/.symlinks/plugins/rust_lib_system_breakdown/macos`)
+
+EXTERNAL SOURCES:
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  rust_lib_system_breakdown:
+    :path: Flutter/ephemeral/.symlinks/plugins/rust_lib_system_breakdown/macos
+
+SPEC CHECKSUMS:
+  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  rust_lib_system_breakdown: 3cf61df91fa0344b9f46b873075b646e60f2bcfd
+
+PODFILE CHECKSUM: e15de0c64e6c18027f256c9f28eb711ef1585c73
+
+COCOAPODS: 1.16.2
