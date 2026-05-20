@@ -13,4 +13,5 @@ hwlocality = { version = "1.0.0-alpha.12", features = ["hwloc-2_1_0", "vendored"
 log = "0.4.29"
 sysinfo = "0.39.1"
 libc = "0.2"
+[target.'cfg(not(all(target_os = "macos", target_arch = "aarch64")))'.dependencies]
 cpu_info = "0.1.0"
