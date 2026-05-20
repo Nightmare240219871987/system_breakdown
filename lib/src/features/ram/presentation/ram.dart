@@ -123,7 +123,7 @@ class _RAMPageState extends State<RAMPage> {
                 }
                 if (snapshot.hasData) {
                   return Text(
-                    "Used Memory : ${bytesToMegabyte(snapshot.data!)} MB",
+                    "Available Memory : ${bytesToMegabyte(snapshot.data!)} MB",
                   );
                 }
                 return const Text("Es ist ein Fehler passiert.");
