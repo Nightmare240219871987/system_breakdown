@@ -6,36 +6,69 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `get_cpu_speed`
+// These functions are ignored because they are not marked as `pub`: `get_brand`, `get_core_usages`, `get_cores_and_threads`, `get_cpu_speeds`, `get_encryption_acceleration`, `get_hash_acceleration`, `get_l1_cache`, `get_l2_cache`, `get_l3_cache`, `get_sse_extensions`, `get_total_cpu_speed`, `get_total_cpu_usage`, `get_vendor`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
-Future<Float32List> getCoreUsages() =>
-    RustLib.instance.api.crateApiCpuGetCoreUsages();
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Cpu>>
+abstract class Cpu implements RustOpaqueInterface {
+  bool get aesSupport;
 
-Future<Uint64List> getCpusSpeed() =>
-    RustLib.instance.api.crateApiCpuGetCpusSpeed();
+  Uint64List get coreSpeeds;
 
-Future<String> getVendor() => RustLib.instance.api.crateApiCpuGetVendor();
+  Float32List get coreUsages;
 
-Future<String> getBrand() => RustLib.instance.api.crateApiCpuGetBrand();
+  String get cpuBrand;
 
-Future<BigInt> getPhysicalCores() =>
-    RustLib.instance.api.crateApiCpuGetPhysicalCores();
+  BigInt get cpuCores;
 
-Future<BigInt> getThreads() => RustLib.instance.api.crateApiCpuGetThreads();
+  BigInt get cpuThreads;
 
-Future<(BigInt, BigInt)> getL1Cache() =>
-    RustLib.instance.api.crateApiCpuGetL1Cache();
+  String get cpuVendor;
 
-Future<BigInt> getL2Cache() => RustLib.instance.api.crateApiCpuGetL2Cache();
+  BigInt get l1Cache;
 
-Future<(BigInt, BigInt)> getL3Cache() =>
-    RustLib.instance.api.crateApiCpuGetL3Cache();
+  BigInt get l2Cache;
 
-Future<bool> getHashAcceleration() =>
-    RustLib.instance.api.crateApiCpuGetHashAcceleration();
+  BigInt get l3Cache;
 
-Future<bool> getEncryptionAcceleration() =>
-    RustLib.instance.api.crateApiCpuGetEncryptionAcceleration();
+  bool get sha256Support;
 
-Future<String> getSseExtensions() =>
-    RustLib.instance.api.crateApiCpuGetSseExtensions();
+  String get sseFeatures;
+
+  BigInt get totalCpuSpeed;
+
+  double get totalCpuUsage;
+
+  set aesSupport(bool aesSupport);
+
+  set coreSpeeds(Uint64List coreSpeeds);
+
+  set coreUsages(Float32List coreUsages);
+
+  set cpuBrand(String cpuBrand);
+
+  set cpuCores(BigInt cpuCores);
+
+  set cpuThreads(BigInt cpuThreads);
+
+  set cpuVendor(String cpuVendor);
+
+  set l1Cache(BigInt l1Cache);
+
+  set l2Cache(BigInt l2Cache);
+
+  set l3Cache(BigInt l3Cache);
+
+  set sha256Support(bool sha256Support);
+
+  set sseFeatures(String sseFeatures);
+
+  set totalCpuSpeed(BigInt totalCpuSpeed);
+
+  set totalCpuUsage(double totalCpuUsage);
+
+  Future<void> fetchData();
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<Cpu> newInstance() => RustLib.instance.api.crateApiCpuCpuNew();
+}

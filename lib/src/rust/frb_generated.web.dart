@@ -22,6 +22,33 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.portManager,
   });
 
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CpuPtr => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu;
+
+  @protected
+  Cpu
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  );
+
+  @protected
+  Cpu
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  );
+
+  @protected
+  Cpu
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  );
+
+  @protected
+  Cpu
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  );
+
   @protected
   String dco_decode_String(dynamic raw);
 
@@ -52,9 +79,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (int, String, double) dco_decode_record_i_32_string_f_32(dynamic raw);
 
   @protected
-  (BigInt, BigInt) dco_decode_record_u_64_usize(dynamic raw);
-
-  @protected
   BigInt dco_decode_u_64(dynamic raw);
 
   @protected
@@ -65,6 +89,30 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
+
+  @protected
+  Cpu
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  Cpu
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  Cpu
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  Cpu
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  );
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -98,9 +146,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
-  (BigInt, BigInt) sse_decode_record_u_64_usize(SseDeserializer deserializer);
-
-  @protected
   BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
@@ -111,6 +156,34 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -155,12 +228,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
-  void sse_encode_record_u_64_usize(
-    (BigInt, BigInt) self,
-    SseSerializer serializer,
-  );
-
-  @protected
   void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
   @protected
@@ -177,6 +244,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
 class RustLibWire implements BaseWire {
   RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+
+  void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    int ptr,
+  ) => wasmModule
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+        ptr,
+      );
+
+  void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    int ptr,
+  ) => wasmModule
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+        ptr,
+      );
 }
 
 @JS('wasm_bindgen')
@@ -184,4 +267,14 @@ external RustLibWasmModule get wasmModule;
 
 @JS()
 @anonymous
-extension type RustLibWasmModule._(JSObject _) implements JSObject {}
+extension type RustLibWasmModule._(JSObject _) implements JSObject {
+  external void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    int ptr,
+  );
+
+  external void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    int ptr,
+  );
+}

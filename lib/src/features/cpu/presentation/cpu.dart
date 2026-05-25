@@ -10,20 +10,39 @@ class CPUPage extends StatefulWidget {
 }
 
 class _CPUPageState extends State<CPUPage> {
-  late int cores = 0;
+  late int cores;
   late bool isRunning;
-  late Stream<List<List<double>>> cpuCoresStream;
-  late Stream<List<BigInt>> cpuCoresSpeedStream;
   late Stream<double> cpuGlobalUsageStream;
+  late Stream<List<List<double>>> cpuCoresUsageStream;
+  late Stream<List<BigInt>> cpuCoresSpeedStream;
+  Future<Cpu>? cpuFuture;
 
   Stream<List<List<double>>> getCpuCoreUsages() async* {
     List<List<double>> result = [];
     while (isRunning) {
+      Cpu cpu = await cpuFuture!;
       if (result.isEmpty) {
-        List<double> coreUsages = await getCoreUsages();
+        List<double> coreUsages = cpu.coreUsages;
 
-        for (int i = 1; i < coreUsages.length; i++) {
-          result.add([0, 100, coreUsages[i]]);
+        for (int i = 0; i < coreUsages.length; i++) {
+          List<double> values = [];
+          for (int j = 0; j < 100; j++) {
+            if (j == 0) {
+              values.add(0.0);
+              continue;
+            }
+            if (j == 1) {
+              values.add(100.0);
+              continue;
+            }
+            if (j == 2) {
+              values.add(coreUsages[i]);
+              continue;
+            }
+            values.add(0.0);
+          }
+
+          result.add(values);
         }
       } else {
         if (result[0].length > 100) {
@@ -31,33 +50,31 @@ class _CPUPageState extends State<CPUPage> {
             result[i].removeAt(2);
           }
         }
-        List<double> coreUsages = await getCoreUsages();
-        for (int i = 1; i < coreUsages.length; i++) {
-          result[i - 1].add(coreUsages[i]);
+        List<double> coreUsages = cpu.coreUsages;
+        for (int i = 0; i < coreUsages.length; i++) {
+          result[i].add(coreUsages[i]);
         }
       }
       yield List.of(result);
-      await Future.delayed(Duration(milliseconds: 300));
     }
   }
 
   Stream<List<BigInt>> getCpuSpeed() async* {
     while (isRunning) {
-      var freqs = await getCpusSpeed();
+      Cpu cpu = await cpuFuture!;
+      var freqs = cpu.coreSpeeds;
       List<BigInt> data = [];
-      for (int i = 1; i < freqs.length; i++) {
+      for (int i = 0; i < freqs.length; i++) {
         data.add(freqs[i]);
       }
       yield List.of(data);
-      await Future.delayed(Duration(milliseconds: 300));
     }
   }
 
   Stream<double> getGlobalCpuUsage() async* {
     while (isRunning) {
-      var usage = await getCoreUsages();
-      yield usage[0];
-      await Future.delayed(Duration(milliseconds: 300));
+      Cpu cpu = await cpuFuture!;
+      yield cpu.totalCpuUsage;
     }
   }
 
@@ -65,12 +82,22 @@ class _CPUPageState extends State<CPUPage> {
     return toConvert.toInt() ~/ 1024;
   }
 
+  Future<void> periodCoreUpdate() async {
+    Cpu cpu = await cpuFuture!;
+    while (isRunning) {
+      await cpu.fetchData();
+      await Future.delayed(Duration(milliseconds: 300));
+    }
+  }
+
   @override
   void initState() {
     isRunning = true;
-    cpuGlobalUsageStream = getGlobalCpuUsage().asBroadcastStream();
-    cpuCoresStream = getCpuCoreUsages().asBroadcastStream();
+    cpuFuture ??= Cpu.newInstance();
+    cpuCoresUsageStream = getCpuCoreUsages().asBroadcastStream();
     cpuCoresSpeedStream = getCpuSpeed().asBroadcastStream();
+    cpuGlobalUsageStream = getGlobalCpuUsage().asBroadcastStream();
+    periodCoreUpdate();
     super.initState();
   }
 
@@ -103,7 +130,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getVendor(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -115,7 +142,7 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          return Text(snapshot.data!);
+                          return Text(snapshot.data!.cpuVendor);
                         }
                         return const Text("es ist ein Fehler passiert.");
                       },
@@ -125,7 +152,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getPhysicalCores(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -137,7 +164,7 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          BigInt res = snapshot.data!;
+                          BigInt res = snapshot.data!.cpuCores;
                           cores = res.toInt();
                           return Text("$res");
                         }
@@ -153,7 +180,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getBrand(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -165,7 +192,7 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          return Text(snapshot.data!);
+                          return Text(snapshot.data!.cpuBrand);
                         }
                         return const Text("es ist ein Fehler passiert.");
                       },
@@ -175,7 +202,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getThreads(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -187,7 +214,7 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          return Text("${snapshot.data!}");
+                          return Text("${snapshot.data!.cpuThreads}");
                         }
                         return const Text("es ist ein Fehler passiert.");
                       },
@@ -201,7 +228,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getL1Cache(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -213,8 +240,8 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          (BigInt, BigInt) res = snapshot.data!;
-                          return Text("${bytesToMegabyte(res.$1 * res.$2)} KB");
+                          BigInt res = snapshot.data!.l1Cache;
+                          return Text("${bytesToMegabyte(res)} KB");
                         }
                         return const Text("es ist ein Fehler passiert.");
                       },
@@ -224,7 +251,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getL2Cache(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -236,7 +263,9 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          return Text("${bytesToMegabyte(snapshot.data!)} KB");
+                          return Text(
+                            "${bytesToMegabyte(snapshot.data!.l2Cache)} KB",
+                          );
                         }
                         return const Text("es ist ein Fehler passiert.");
                       },
@@ -246,7 +275,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getL3Cache(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -258,10 +287,10 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          (BigInt, BigInt) res = snapshot.data!;
+                          BigInt res = snapshot.data!.l3Cache;
 
                           return Text(
-                            "${bytesToMegabyte(res.$1 * res.$2)} KB (${(bytesToMegabyte(res.$1 * res.$2) / cores).toStringAsFixed(0)} KB)",
+                            "${bytesToMegabyte(res)} KB (${(bytesToMegabyte(res) / cores).toStringAsFixed(0)} KB)",
                           );
                         }
                         return const Text("es ist ein Fehler passiert.");
@@ -276,7 +305,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getEncryptionAcceleration(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -288,7 +317,7 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          bool res = snapshot.data!;
+                          bool res = snapshot.data!.aesSupport;
                           return Text(res ? "Ja" : "Nein");
                         }
                         return const Text("es ist ein Fehler passiert.");
@@ -299,7 +328,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getHashAcceleration(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -311,7 +340,7 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          bool res = snapshot.data!;
+                          bool res = snapshot.data!.sha256Support;
                           return Text(res ? "Ja" : "Nein");
                         }
                         return const Text("es ist ein Fehler passiert.");
@@ -322,7 +351,7 @@ class _CPUPageState extends State<CPUPage> {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     FutureBuilder(
-                      future: getSseExtensions(),
+                      future: cpuFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -334,7 +363,7 @@ class _CPUPageState extends State<CPUPage> {
                           );
                         }
                         if (snapshot.hasData) {
-                          var res = snapshot.data!;
+                          var res = snapshot.data!.sseFeatures;
                           return Text(res.toString());
                         }
                         return const Text("es ist ein Fehler passiert.");
@@ -424,7 +453,7 @@ class _CPUPageState extends State<CPUPage> {
                                   Text("${snapshot.data![index]}MHz"),
                                   Expanded(
                                     child: StreamBuilder<List<List<double>>>(
-                                      stream: cpuCoresStream,
+                                      stream: cpuCoresUsageStream,
                                       builder: (context, usageSnapshot) {
                                         if (usageSnapshot.connectionState ==
                                             ConnectionState.waiting) {
@@ -438,7 +467,7 @@ class _CPUPageState extends State<CPUPage> {
                                         if (usageSnapshot.hasData) {
                                           return SfSparkAreaChart(
                                             key: ValueKey(
-                                              'core_${index}_${usageSnapshot.data![index]}',
+                                              'core_${index}_${usageSnapshot.data![index].last}',
                                             ),
                                             data: usageSnapshot.data![index],
                                             color: Colors.lightBlue,

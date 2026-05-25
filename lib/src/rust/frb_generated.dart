@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => 610191465;
+  int get rustContentHash => 740420483;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -78,35 +78,115 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  bool crateApiCpuCpuAutoAccessorGetAesSupport({required Cpu that});
+
+  Uint64List crateApiCpuCpuAutoAccessorGetCoreSpeeds({required Cpu that});
+
+  Float32List crateApiCpuCpuAutoAccessorGetCoreUsages({required Cpu that});
+
+  String crateApiCpuCpuAutoAccessorGetCpuBrand({required Cpu that});
+
+  BigInt crateApiCpuCpuAutoAccessorGetCpuCores({required Cpu that});
+
+  BigInt crateApiCpuCpuAutoAccessorGetCpuThreads({required Cpu that});
+
+  String crateApiCpuCpuAutoAccessorGetCpuVendor({required Cpu that});
+
+  BigInt crateApiCpuCpuAutoAccessorGetL1Cache({required Cpu that});
+
+  BigInt crateApiCpuCpuAutoAccessorGetL2Cache({required Cpu that});
+
+  BigInt crateApiCpuCpuAutoAccessorGetL3Cache({required Cpu that});
+
+  bool crateApiCpuCpuAutoAccessorGetSha256Support({required Cpu that});
+
+  String crateApiCpuCpuAutoAccessorGetSseFeatures({required Cpu that});
+
+  BigInt crateApiCpuCpuAutoAccessorGetTotalCpuSpeed({required Cpu that});
+
+  double crateApiCpuCpuAutoAccessorGetTotalCpuUsage({required Cpu that});
+
+  void crateApiCpuCpuAutoAccessorSetAesSupport({
+    required Cpu that,
+    required bool aesSupport,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetCoreSpeeds({
+    required Cpu that,
+    required Uint64List coreSpeeds,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetCoreUsages({
+    required Cpu that,
+    required Float32List coreUsages,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetCpuBrand({
+    required Cpu that,
+    required String cpuBrand,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetCpuCores({
+    required Cpu that,
+    required BigInt cpuCores,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetCpuThreads({
+    required Cpu that,
+    required BigInt cpuThreads,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetCpuVendor({
+    required Cpu that,
+    required String cpuVendor,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetL1Cache({
+    required Cpu that,
+    required BigInt l1Cache,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetL2Cache({
+    required Cpu that,
+    required BigInt l2Cache,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetL3Cache({
+    required Cpu that,
+    required BigInt l3Cache,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetSha256Support({
+    required Cpu that,
+    required bool sha256Support,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetSseFeatures({
+    required Cpu that,
+    required String sseFeatures,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetTotalCpuSpeed({
+    required Cpu that,
+    required BigInt totalCpuSpeed,
+  });
+
+  void crateApiCpuCpuAutoAccessorSetTotalCpuUsage({
+    required Cpu that,
+    required double totalCpuUsage,
+  });
+
+  Future<void> crateApiCpuCpuFetchData({required Cpu that});
+
+  Future<Cpu> crateApiCpuCpuNew();
+
   Future<List<(int, String, double)>> crateApiProcessGetAllProcesses();
 
   Future<BigInt> crateApiRamGetAvailableRam();
 
-  Future<String> crateApiCpuGetBrand();
-
-  Future<Float32List> crateApiCpuGetCoreUsages();
-
-  Future<Uint64List> crateApiCpuGetCpusSpeed();
-
-  Future<bool> crateApiCpuGetEncryptionAcceleration();
-
   Future<BigInt> crateApiRamGetFreeRam();
 
   Future<BigInt> crateApiRamGetFreeSwap();
-
-  Future<bool> crateApiCpuGetHashAcceleration();
-
-  Future<(BigInt, BigInt)> crateApiCpuGetL1Cache();
-
-  Future<BigInt> crateApiCpuGetL2Cache();
-
-  Future<(BigInt, BigInt)> crateApiCpuGetL3Cache();
-
-  Future<BigInt> crateApiCpuGetPhysicalCores();
-
-  Future<String> crateApiCpuGetSseExtensions();
-
-  Future<BigInt> crateApiCpuGetThreads();
 
   Future<BigInt> crateApiRamGetTotalRam();
 
@@ -116,7 +196,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<BigInt> crateApiRamGetUsedSwap();
 
-  Future<String> crateApiCpuGetVendor();
+  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Cpu;
+
+  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Cpu;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CpuPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -128,6 +212,933 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  bool crateApiCpuCpuAutoAccessorGetAesSupport({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetAesSupportConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetAesSupportConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_aes_support",
+        argNames: ["that"],
+      );
+
+  @override
+  Uint64List crateApiCpuCpuAutoAccessorGetCoreSpeeds({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_64_strict,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetCoreSpeedsConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetCoreSpeedsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_core_speeds",
+        argNames: ["that"],
+      );
+
+  @override
+  Float32List crateApiCpuCpuAutoAccessorGetCoreUsages({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_f_32_strict,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetCoreUsagesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetCoreUsagesConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_core_usages",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiCpuCpuAutoAccessorGetCpuBrand({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetCpuBrandConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetCpuBrandConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_cpu_brand",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiCpuCpuAutoAccessorGetCpuCores({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_usize,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetCpuCoresConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetCpuCoresConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_cpu_cores",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiCpuCpuAutoAccessorGetCpuThreads({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_usize,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetCpuThreadsConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetCpuThreadsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_cpu_threads",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiCpuCpuAutoAccessorGetCpuVendor({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetCpuVendorConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetCpuVendorConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_cpu_vendor",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiCpuCpuAutoAccessorGetL1Cache({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetL1CacheConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetL1CacheConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_l1_cache",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiCpuCpuAutoAccessorGetL2Cache({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetL2CacheConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetL2CacheConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_l2_cache",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiCpuCpuAutoAccessorGetL3Cache({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetL3CacheConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetL3CacheConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_l3_cache",
+        argNames: ["that"],
+      );
+
+  @override
+  bool crateApiCpuCpuAutoAccessorGetSha256Support({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetSha256SupportConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetSha256SupportConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_sha256_support",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiCpuCpuAutoAccessorGetSseFeatures({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetSseFeaturesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetSseFeaturesConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_sse_features",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiCpuCpuAutoAccessorGetTotalCpuSpeed({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetTotalCpuSpeedConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetTotalCpuSpeedConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_total_cpu_speed",
+        argNames: ["that"],
+      );
+
+  @override
+  double crateApiCpuCpuAutoAccessorGetTotalCpuUsage({required Cpu that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_f_32,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorGetTotalCpuUsageConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorGetTotalCpuUsageConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_get_total_cpu_usage",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetAesSupport({
+    required Cpu that,
+    required bool aesSupport,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_bool(aesSupport, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetAesSupportConstMeta,
+        argValues: [that, aesSupport],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetAesSupportConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_aes_support",
+        argNames: ["that", "aesSupport"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetCoreSpeeds({
+    required Cpu that,
+    required Uint64List coreSpeeds,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_list_prim_u_64_strict(coreSpeeds, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetCoreSpeedsConstMeta,
+        argValues: [that, coreSpeeds],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetCoreSpeedsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_core_speeds",
+        argNames: ["that", "coreSpeeds"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetCoreUsages({
+    required Cpu that,
+    required Float32List coreUsages,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_list_prim_f_32_strict(coreUsages, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetCoreUsagesConstMeta,
+        argValues: [that, coreUsages],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetCoreUsagesConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_core_usages",
+        argNames: ["that", "coreUsages"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetCpuBrand({
+    required Cpu that,
+    required String cpuBrand,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_String(cpuBrand, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetCpuBrandConstMeta,
+        argValues: [that, cpuBrand],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetCpuBrandConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_cpu_brand",
+        argNames: ["that", "cpuBrand"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetCpuCores({
+    required Cpu that,
+    required BigInt cpuCores,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_usize(cpuCores, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetCpuCoresConstMeta,
+        argValues: [that, cpuCores],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetCpuCoresConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_cpu_cores",
+        argNames: ["that", "cpuCores"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetCpuThreads({
+    required Cpu that,
+    required BigInt cpuThreads,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_usize(cpuThreads, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetCpuThreadsConstMeta,
+        argValues: [that, cpuThreads],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetCpuThreadsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_cpu_threads",
+        argNames: ["that", "cpuThreads"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetCpuVendor({
+    required Cpu that,
+    required String cpuVendor,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_String(cpuVendor, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetCpuVendorConstMeta,
+        argValues: [that, cpuVendor],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetCpuVendorConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_cpu_vendor",
+        argNames: ["that", "cpuVendor"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetL1Cache({
+    required Cpu that,
+    required BigInt l1Cache,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(l1Cache, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetL1CacheConstMeta,
+        argValues: [that, l1Cache],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetL1CacheConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_l1_cache",
+        argNames: ["that", "l1Cache"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetL2Cache({
+    required Cpu that,
+    required BigInt l2Cache,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(l2Cache, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetL2CacheConstMeta,
+        argValues: [that, l2Cache],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetL2CacheConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_l2_cache",
+        argNames: ["that", "l2Cache"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetL3Cache({
+    required Cpu that,
+    required BigInt l3Cache,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(l3Cache, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetL3CacheConstMeta,
+        argValues: [that, l3Cache],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetL3CacheConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_l3_cache",
+        argNames: ["that", "l3Cache"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetSha256Support({
+    required Cpu that,
+    required bool sha256Support,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_bool(sha256Support, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetSha256SupportConstMeta,
+        argValues: [that, sha256Support],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetSha256SupportConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_sha256_support",
+        argNames: ["that", "sha256Support"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetSseFeatures({
+    required Cpu that,
+    required String sseFeatures,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_String(sseFeatures, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetSseFeaturesConstMeta,
+        argValues: [that, sseFeatures],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetSseFeaturesConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_sse_features",
+        argNames: ["that", "sseFeatures"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetTotalCpuSpeed({
+    required Cpu that,
+    required BigInt totalCpuSpeed,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(totalCpuSpeed, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetTotalCpuSpeedConstMeta,
+        argValues: [that, totalCpuSpeed],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetTotalCpuSpeedConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_total_cpu_speed",
+        argNames: ["that", "totalCpuSpeed"],
+      );
+
+  @override
+  void crateApiCpuCpuAutoAccessorSetTotalCpuUsage({
+    required Cpu that,
+    required double totalCpuUsage,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          sse_encode_f_32(totalCpuUsage, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuAutoAccessorSetTotalCpuUsageConstMeta,
+        argValues: [that, totalCpuUsage],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuAutoAccessorSetTotalCpuUsageConstMeta =>
+      const TaskConstMeta(
+        debugName: "Cpu_auto_accessor_set_total_cpu_usage",
+        argNames: ["that", "totalCpuUsage"],
+      );
+
+  @override
+  Future<void> crateApiCpuCpuFetchData({required Cpu that}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+            that,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 29,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuFetchDataConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuFetchDataConstMeta =>
+      const TaskConstMeta(debugName: "Cpu_fetch_data", argNames: ["that"]);
+
+  @override
+  Future<Cpu> crateApiCpuCpuNew() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 30,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCpuCpuNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCpuCpuNewConstMeta =>
+      const TaskConstMeta(debugName: "Cpu_new", argNames: []);
+
+  @override
   Future<List<(int, String, double)>> crateApiProcessGetAllProcesses() {
     return handler.executeNormal(
       NormalTask(
@@ -136,7 +1147,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 1,
+            funcId: 31,
             port: port_,
           );
         },
@@ -163,7 +1174,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 2,
+            funcId: 32,
             port: port_,
           );
         },
@@ -182,117 +1193,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "get_available_ram", argNames: []);
 
   @override
-  Future<String> crateApiCpuGetBrand() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 3,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetBrandConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetBrandConstMeta =>
-      const TaskConstMeta(debugName: "get_brand", argNames: []);
-
-  @override
-  Future<Float32List> crateApiCpuGetCoreUsages() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 4,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_prim_f_32_strict,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetCoreUsagesConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetCoreUsagesConstMeta =>
-      const TaskConstMeta(debugName: "get_core_usages", argNames: []);
-
-  @override
-  Future<Uint64List> crateApiCpuGetCpusSpeed() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 5,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_64_strict,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetCpusSpeedConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetCpusSpeedConstMeta =>
-      const TaskConstMeta(debugName: "get_cpus_speed", argNames: []);
-
-  @override
-  Future<bool> crateApiCpuGetEncryptionAcceleration() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 6,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetEncryptionAccelerationConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetEncryptionAccelerationConstMeta =>
-      const TaskConstMeta(
-        debugName: "get_encryption_acceleration",
-        argNames: [],
-      );
-
-  @override
   Future<BigInt> crateApiRamGetFreeRam() {
     return handler.executeNormal(
       NormalTask(
@@ -301,7 +1201,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 33,
             port: port_,
           );
         },
@@ -328,7 +1228,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 34,
             port: port_,
           );
         },
@@ -347,195 +1247,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "get_free_swap", argNames: []);
 
   @override
-  Future<bool> crateApiCpuGetHashAcceleration() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 9,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetHashAccelerationConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetHashAccelerationConstMeta =>
-      const TaskConstMeta(debugName: "get_hash_acceleration", argNames: []);
-
-  @override
-  Future<(BigInt, BigInt)> crateApiCpuGetL1Cache() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 10,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_record_u_64_usize,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetL1CacheConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetL1CacheConstMeta =>
-      const TaskConstMeta(debugName: "get_l1_cache", argNames: []);
-
-  @override
-  Future<BigInt> crateApiCpuGetL2Cache() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 11,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_u_64,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetL2CacheConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetL2CacheConstMeta =>
-      const TaskConstMeta(debugName: "get_l2_cache", argNames: []);
-
-  @override
-  Future<(BigInt, BigInt)> crateApiCpuGetL3Cache() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 12,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_record_u_64_usize,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetL3CacheConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetL3CacheConstMeta =>
-      const TaskConstMeta(debugName: "get_l3_cache", argNames: []);
-
-  @override
-  Future<BigInt> crateApiCpuGetPhysicalCores() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 13,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_usize,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetPhysicalCoresConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetPhysicalCoresConstMeta =>
-      const TaskConstMeta(debugName: "get_physical_cores", argNames: []);
-
-  @override
-  Future<String> crateApiCpuGetSseExtensions() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 14,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetSseExtensionsConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetSseExtensionsConstMeta =>
-      const TaskConstMeta(debugName: "get_sse_extensions", argNames: []);
-
-  @override
-  Future<BigInt> crateApiCpuGetThreads() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 15,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_usize,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetThreadsConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiCpuGetThreadsConstMeta =>
-      const TaskConstMeta(debugName: "get_threads", argNames: []);
-
-  @override
   Future<BigInt> crateApiRamGetTotalRam() {
     return handler.executeNormal(
       NormalTask(
@@ -544,7 +1255,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 35,
             port: port_,
           );
         },
@@ -571,7 +1282,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 36,
             port: port_,
           );
         },
@@ -598,7 +1309,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 37,
             port: port_,
           );
         },
@@ -625,7 +1336,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 38,
             port: port_,
           );
         },
@@ -643,32 +1354,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiRamGetUsedSwapConstMeta =>
       const TaskConstMeta(debugName: "get_used_swap", argNames: []);
 
-  @override
-  Future<String> crateApiCpuGetVendor() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 20,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiCpuGetVendorConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_Cpu => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_Cpu => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu;
+
+  @protected
+  Cpu
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CpuImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
-  TaskConstMeta get kCrateApiCpuGetVendorConstMeta =>
-      const TaskConstMeta(debugName: "get_vendor", argNames: []);
+  @protected
+  Cpu
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CpuImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Cpu
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CpuImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Cpu
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CpuImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
 
   @protected
   String dco_decode_String(dynamic raw) {
@@ -737,16 +1465,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  (BigInt, BigInt) dco_decode_record_u_64_usize(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2) {
-      throw Exception('Expected 2 elements, got ${arr.length}');
-    }
-    return (dco_decode_u_64(arr[0]), dco_decode_usize(arr[1]));
-  }
-
-  @protected
   BigInt dco_decode_u_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
@@ -768,6 +1486,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt dco_decode_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
+  }
+
+  @protected
+  Cpu
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CpuImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  Cpu
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CpuImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  Cpu
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CpuImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  Cpu
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CpuImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
   }
 
   @protected
@@ -842,14 +1608,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  (BigInt, BigInt) sse_decode_record_u_64_usize(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_u_64(deserializer);
-    var var_field1 = sse_decode_usize(deserializer);
-    return (var_field0, var_field1);
-  }
-
-  @protected
   BigInt sse_decode_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getBigUint64();
@@ -870,6 +1628,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt sse_decode_usize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CpuImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CpuImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CpuImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
+    Cpu self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CpuImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
   }
 
   @protected
@@ -950,16 +1760,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_record_u_64_usize(
-    (BigInt, BigInt) self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_64(self.$1, serializer);
-    sse_encode_usize(self.$2, serializer);
-  }
-
-  @protected
   void sse_encode_u_64(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
@@ -981,4 +1781,135 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
   }
+}
+
+@sealed
+class CpuImpl extends RustOpaque implements Cpu {
+  // Not to be used by end users
+  CpuImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  CpuImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Cpu,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Cpu,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_CpuPtr,
+  );
+
+  bool get aesSupport =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetAesSupport(that: this);
+
+  Uint64List get coreSpeeds =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetCoreSpeeds(that: this);
+
+  Float32List get coreUsages =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetCoreUsages(that: this);
+
+  String get cpuBrand =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetCpuBrand(that: this);
+
+  BigInt get cpuCores =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetCpuCores(that: this);
+
+  BigInt get cpuThreads =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetCpuThreads(that: this);
+
+  String get cpuVendor =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetCpuVendor(that: this);
+
+  BigInt get l1Cache =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetL1Cache(that: this);
+
+  BigInt get l2Cache =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetL2Cache(that: this);
+
+  BigInt get l3Cache =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetL3Cache(that: this);
+
+  bool get sha256Support => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorGetSha256Support(that: this);
+
+  String get sseFeatures =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorGetSseFeatures(that: this);
+
+  BigInt get totalCpuSpeed => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorGetTotalCpuSpeed(that: this);
+
+  double get totalCpuUsage => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorGetTotalCpuUsage(that: this);
+
+  set aesSupport(bool aesSupport) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetAesSupport(
+        that: this,
+        aesSupport: aesSupport,
+      );
+
+  set coreSpeeds(Uint64List coreSpeeds) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetCoreSpeeds(
+        that: this,
+        coreSpeeds: coreSpeeds,
+      );
+
+  set coreUsages(Float32List coreUsages) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetCoreUsages(
+        that: this,
+        coreUsages: coreUsages,
+      );
+
+  set cpuBrand(String cpuBrand) => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorSetCpuBrand(that: this, cpuBrand: cpuBrand);
+
+  set cpuCores(BigInt cpuCores) => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorSetCpuCores(that: this, cpuCores: cpuCores);
+
+  set cpuThreads(BigInt cpuThreads) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetCpuThreads(
+        that: this,
+        cpuThreads: cpuThreads,
+      );
+
+  set cpuVendor(String cpuVendor) => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorSetCpuVendor(that: this, cpuVendor: cpuVendor);
+
+  set l1Cache(BigInt l1Cache) => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorSetL1Cache(that: this, l1Cache: l1Cache);
+
+  set l2Cache(BigInt l2Cache) => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorSetL2Cache(that: this, l2Cache: l2Cache);
+
+  set l3Cache(BigInt l3Cache) => RustLib.instance.api
+      .crateApiCpuCpuAutoAccessorSetL3Cache(that: this, l3Cache: l3Cache);
+
+  set sha256Support(bool sha256Support) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetSha256Support(
+        that: this,
+        sha256Support: sha256Support,
+      );
+
+  set sseFeatures(String sseFeatures) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetSseFeatures(
+        that: this,
+        sseFeatures: sseFeatures,
+      );
+
+  set totalCpuSpeed(BigInt totalCpuSpeed) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetTotalCpuSpeed(
+        that: this,
+        totalCpuSpeed: totalCpuSpeed,
+      );
+
+  set totalCpuUsage(double totalCpuUsage) =>
+      RustLib.instance.api.crateApiCpuCpuAutoAccessorSetTotalCpuUsage(
+        that: this,
+        totalCpuUsage: totalCpuUsage,
+      );
+
+  Future<void> fetchData() =>
+      RustLib.instance.api.crateApiCpuCpuFetchData(that: this);
 }
