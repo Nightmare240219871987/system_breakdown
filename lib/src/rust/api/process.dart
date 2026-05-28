@@ -6,5 +6,39 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<List<(int, String, double)>> getAllProcesses() =>
-    RustLib.instance.api.crateApiProcessGetAllProcesses();
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>
+abstract class Processes implements RustOpaqueInterface {
+  Future<List<Process>> getAllProcesses();
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<Processes> newInstance() =>
+      RustLib.instance.api.crateApiProcessProcessesNew();
+}
+
+class Process {
+  final String name;
+  final double usage;
+  final int pid;
+  final BigInt memory;
+
+  const Process({
+    required this.name,
+    required this.usage,
+    required this.pid,
+    required this.memory,
+  });
+
+  @override
+  int get hashCode =>
+      name.hashCode ^ usage.hashCode ^ pid.hashCode ^ memory.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Process &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          usage == other.usage &&
+          pid == other.pid &&
+          memory == other.memory;
+}

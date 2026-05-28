@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:system_breakdown/src/features/processes/domain/crow.dart';
+import 'package:system_breakdown/src/features/processes/domain/header.dart';
 import 'package:system_breakdown/src/rust/api/process.dart';
 
 class ProcessesPage extends StatefulWidget {
@@ -9,30 +11,70 @@ class ProcessesPage extends StatefulWidget {
 }
 
 class _ProcessesPageState extends State<ProcessesPage> {
-  late bool isRunning;
+  late Future<Processes> processesFuture;
+  late Stream<List<Process>> processesStream;
+  bool isRunning = false;
+  List<Process> cachedRaw = [];
+  List<Process> cachedSorted = [];
 
-  Stream<List<Widget>> getText() async* {
+  int _sortColIndex = 0;
+  bool _sortAsc = false;
+
+  Stream<List<Process>> getProcessesStream() async* {
+    Processes processes = await processesFuture;
     while (isRunning) {
-      List<(int, String, double)> processes = await getAllProcesses();
-      List<Widget> widgets = [];
-      for (int i = 0; i < processes.length; i++) {
-        widgets.add(
-          ListTile(
-            leading: Text("PID : ${processes[i].$1}"),
-            subtitle: Text(processes[i].$2),
-            trailing: Text("Usage: ${processes[i].$3}%"),
-          ),
-        );
-      }
-      yield widgets;
+      List<Process> procs = await processes.getAllProcesses();
+      yield procs;
       await Future.delayed(Duration(milliseconds: 1000));
     }
   }
 
+  List<Process> _sorted(List<Process> procs) {
+    if (!identical(procs, cachedRaw)) {
+      cachedRaw = procs;
+      cachedSorted = [...procs];
+      cachedSorted.sort((a, b) {
+        return _compare(a, b);
+      });
+    }
+    return cachedSorted;
+  }
+
+  int _compare(Process a, Process b) {
+    int cmp;
+    switch (_sortColIndex) {
+      case 0:
+        cmp = a.pid.compareTo(b.pid);
+        break;
+      case 1:
+        cmp = a.name.compareTo(b.name);
+        break;
+      case 2:
+        cmp = a.memory.compareTo(b.memory);
+        break;
+      case 3:
+        cmp = a.usage.compareTo(b.usage);
+        break;
+      default:
+        return 0;
+    }
+    return _sortAsc ? cmp : -cmp;
+  }
+
+  void _onSort(int col, bool asc) {
+    setState(() {
+      _sortColIndex = col;
+      _sortAsc = asc;
+      cachedSorted.sort((a, b) => _compare(a, b));
+    });
+  }
+
   @override
   void initState() {
-    isRunning = true;
     super.initState();
+    isRunning = true;
+    processesFuture = Processes.newInstance();
+    processesStream = getProcessesStream();
   }
 
   @override
@@ -43,17 +85,35 @@ class _ProcessesPageState extends State<ProcessesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Widget>>(
-      stream: getText(),
+    return StreamBuilder(
+      stream: processesStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: const CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return const Text("Es hat einen Fehler gegeben!");
+          return Text(
+            "Fehler: ${snapshot.error}",
+            style: TextStyle(color: Colors.red),
+          );
         }
-        final items = snapshot.data ?? <Widget>[];
-        return Expanded(child: ListView(children: items));
+        if (snapshot.hasData) {
+          List<Process> procs = _sorted(snapshot.data!);
+          return Column(
+            children: [
+              Header(_sortColIndex, _sortAsc, _onSort),
+
+              Expanded(
+                child: ListView.builder(
+                  itemCount: procs.length,
+                  itemExtent: 40,
+                  itemBuilder: (context, index) => CRow(procs[index]),
+                ),
+              ),
+            ],
+          );
+        }
+        return Text("etwas ist schief gegangen.");
       },
     );
   }

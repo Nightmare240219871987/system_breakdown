@@ -27,6 +27,7 @@
 // Section: imports
 
 use crate::api::cpu::*;
+use crate::api::process::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -39,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 740420483;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1679617902;
 
 // Section: executor
 
@@ -1488,7 +1489,7 @@ fn wire__crate__api__cpu__Cpu_new_impl(
         },
     )
 }
-fn wire__crate__api__process__get_all_processes_impl(
+fn wire__crate__api__process__Processes_get_all_processes_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -1496,7 +1497,58 @@ fn wire__crate__api__process__get_all_processes_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "get_all_processes",
+            debug_name: "Processes_get_all_processes",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, true,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let mut api_that_guard = api_that_guard.unwrap();
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::process::Processes::get_all_processes(&mut *api_that_guard),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__process__Processes_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "Processes_new",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -1513,7 +1565,7 @@ fn wire__crate__api__process__get_all_processes_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::process::get_all_processes())?;
+                    let output_ok = Result::<_, ()>::Ok(crate::api::process::Processes::new())?;
                     Ok(output_ok)
                 })())
             }
@@ -1750,6 +1802,9 @@ fn wire__crate__api__ram__get_used_swap_impl(
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Cpu>
 );
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>
+);
 
 // Section: dart2rust
 
@@ -1761,7 +1816,27 @@ impl SseDecode for Cpu {
     }
 }
 
+impl SseDecode for Processes {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
 impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Cpu>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
@@ -1788,13 +1863,6 @@ impl SseDecode for f32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_f32::<NativeEndian>().unwrap()
-    }
-}
-
-impl SseDecode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
     }
 }
 
@@ -1834,25 +1902,38 @@ impl SseDecode for Vec<u8> {
     }
 }
 
-impl SseDecode for Vec<(i32, String, f32)> {
+impl SseDecode for Vec<crate::api::process::Process> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
-            ans_.push(<(i32, String, f32)>::sse_decode(deserializer));
+            ans_.push(<crate::api::process::Process>::sse_decode(deserializer));
         }
         return ans_;
     }
 }
 
-impl SseDecode for (i32, String, f32) {
+impl SseDecode for crate::api::process::Process {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_field0 = <i32>::sse_decode(deserializer);
-        let mut var_field1 = <String>::sse_decode(deserializer);
-        let mut var_field2 = <f32>::sse_decode(deserializer);
-        return (var_field0, var_field1, var_field2);
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_usage = <f32>::sse_decode(deserializer);
+        let mut var_pid = <u32>::sse_decode(deserializer);
+        let mut var_memory = <u64>::sse_decode(deserializer);
+        return crate::api::process::Process {
+            name: var_name,
+            usage: var_usage,
+            pid: var_pid,
+            memory: var_memory,
+        };
+    }
+}
+
+impl SseDecode for u32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u32::<NativeEndian>().unwrap()
     }
 }
 
@@ -1882,6 +1963,13 @@ impl SseDecode for usize {
     }
 }
 
+impl SseDecode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -1893,14 +1981,20 @@ fn pde_ffi_dispatcher_primary_impl(
     match func_id {
         29 => wire__crate__api__cpu__Cpu_fetch_data_impl(port, ptr, rust_vec_len, data_len),
         30 => wire__crate__api__cpu__Cpu_new_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__process__get_all_processes_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__ram__get_available_ram_impl(port, ptr, rust_vec_len, data_len),
-        33 => wire__crate__api__ram__get_free_ram_impl(port, ptr, rust_vec_len, data_len),
-        34 => wire__crate__api__ram__get_free_swap_impl(port, ptr, rust_vec_len, data_len),
-        35 => wire__crate__api__ram__get_total_ram_impl(port, ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__ram__get_total_swap_impl(port, ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__ram__get_used_memory_impl(port, ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__ram__get_used_swap_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__process__Processes_get_all_processes_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        32 => wire__crate__api__process__Processes_new_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__ram__get_available_ram_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__ram__get_free_ram_impl(port, ptr, rust_vec_len, data_len),
+        35 => wire__crate__api__ram__get_free_swap_impl(port, ptr, rust_vec_len, data_len),
+        36 => wire__crate__api__ram__get_total_ram_impl(port, ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__ram__get_total_swap_impl(port, ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__ram__get_used_memory_impl(port, ptr, rust_vec_len, data_len),
+        39 => wire__crate__api__ram__get_used_swap_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2054,6 +2148,42 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Cpu>> for Cpu {
     }
 }
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<Processes> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<Processes> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Processes>> for Processes {
+    fn into_into_dart(self) -> FrbWrapper<Processes> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::process::Process {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.name.into_into_dart().into_dart(),
+            self.usage.into_into_dart().into_dart(),
+            self.pid.into_into_dart().into_dart(),
+            self.memory.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::process::Process {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::process::Process>
+    for crate::api::process::Process
+{
+    fn into_into_dart(self) -> crate::api::process::Process {
+        self
+    }
+}
+
 impl SseEncode for Cpu {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2064,7 +2194,25 @@ impl SseEncode for Cpu {
     }
 }
 
+impl SseEncode for Processes {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
 impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Cpu>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();
@@ -2091,13 +2239,6 @@ impl SseEncode for f32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_f32::<NativeEndian>(self).unwrap();
-    }
-}
-
-impl SseEncode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -2131,22 +2272,30 @@ impl SseEncode for Vec<u8> {
     }
 }
 
-impl SseEncode for Vec<(i32, String, f32)> {
+impl SseEncode for Vec<crate::api::process::Process> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <(i32, String, f32)>::sse_encode(item, serializer);
+            <crate::api::process::Process>::sse_encode(item, serializer);
         }
     }
 }
 
-impl SseEncode for (i32, String, f32) {
+impl SseEncode for crate::api::process::Process {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.0, serializer);
-        <String>::sse_encode(self.1, serializer);
-        <f32>::sse_encode(self.2, serializer);
+        <String>::sse_encode(self.name, serializer);
+        <f32>::sse_encode(self.usage, serializer);
+        <u32>::sse_encode(self.pid, serializer);
+        <u64>::sse_encode(self.memory, serializer);
+    }
+}
+
+impl SseEncode for u32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -2179,6 +2328,13 @@ impl SseEncode for usize {
     }
 }
 
+impl SseEncode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 mod io {
     // This file is automatically generated, so please do not edit it.
@@ -2188,6 +2344,7 @@ mod io {
 
     use super::*;
     use crate::api::cpu::*;
+    use crate::api::process::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -2211,6 +2368,20 @@ mod io {
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Cpu>>::decrement_strong_count(ptr as _);
     }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_system_breakdown_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProcesses(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_system_breakdown_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProcesses(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>::decrement_strong_count(ptr as _);
+    }
 }
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;
@@ -2225,6 +2396,7 @@ mod web {
 
     use super::*;
     use crate::api::cpu::*;
+    use crate::api::process::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -2249,6 +2421,20 @@ mod web {
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Cpu>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProcesses(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProcesses(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Processes>>::decrement_strong_count(ptr as _);
     }
 }
 #[cfg(target_family = "wasm")]

@@ -1,18 +1,43 @@
-use std::time::Duration;
-use std::thread::sleep;
-use sysinfo::{self, System};
+use sysinfo::{self};
 
-pub fn get_all_processes() -> Vec<(i32, String, f32)>  {
-    let mut sys = System::new_all();
+pub struct Processes {
+    system: sysinfo::System,
+}
 
-    sys.refresh_all();
-    sleep(Duration::from_millis(200));
-    sys.refresh_all();
-    
-    let processes = sysinfo::System::processes(&sys);
-    let mut procs: Vec<(i32, String, f32)> = Vec::new();
-    for (pid, process) in processes.iter() {
-        procs.push((pid.as_u32() as i32, String::from(process.name().to_str().unwrap()), process.cpu_usage()));
+pub struct Process {
+    pub name: String,
+    pub usage: f32,
+    pub pid: u32,
+    pub memory: u64,
+}
+
+impl Processes {
+    pub fn new() -> Processes {
+        let mut system = sysinfo::System::new_all();
+        system.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
+        let handle: Processes = Processes { system: system };
+        handle
     }
-    procs
+
+    pub fn get_all_processes(&mut self) -> Vec<Process> {
+        self.system
+            .refresh_processes(sysinfo::ProcessesToUpdate::All, true);
+        let processes = self.system.processes();
+        let mut procs = Vec::new();
+        for (pid, process) in processes.iter() {
+            let name_match = process.name().to_str();
+            let mut name = "";
+            match name_match {
+                Some(s) => name = s,
+                None => (),
+            }
+            procs.push(Process {
+                name: name.to_string(),
+                usage: process.cpu_usage(),
+                pid: pid.as_u32(),
+                memory: process.memory(),
+            });
+        }
+        procs
+    }
 }

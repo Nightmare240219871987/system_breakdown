@@ -77,7 +77,7 @@ class _LandingPageState extends State<LandingPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: Divider(color: Colors.grey.shade400, height: 1),
                   ),
-                  currentPage,
+                  Expanded(child: currentPage),
                 ],
               ),
             ),

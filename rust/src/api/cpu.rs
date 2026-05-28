@@ -5,8 +5,6 @@ use hwlocality::{
 #[cfg(target_os = "macos")]
 use std::ffi::CString;
 
-use std::thread::sleep;
-use std::time::Duration;
 use sysinfo::{self};
 
 #[derive(Debug)]
@@ -50,6 +48,7 @@ impl Cpu {
             total_cpu_usage: 0.0,
             total_cpu_speed: 0,
         };
+        cpu.system.refresh_cpu_all();
         cpu.get_brand();
         cpu.get_vendor();
         cpu.get_cores_and_threads();
@@ -64,7 +63,7 @@ impl Cpu {
     }
 
     fn get_vendor(&mut self) {
-        self.cpu_vendor = self.system.cpus()[0].brand().to_string();
+        self.cpu_vendor = self.system.cpus()[0].vendor_id().to_string();
     }
 
     fn get_brand(&mut self) {
@@ -72,6 +71,7 @@ impl Cpu {
     }
 
     pub fn fetch_data(&mut self) -> &Cpu {
+        self.system.refresh_cpu_all();
         self.get_core_usages();
         self.get_cpu_speeds();
         self.get_total_cpu_usage();
@@ -274,9 +274,6 @@ impl Cpu {
     }
 
     fn get_cpu_speeds(&mut self) {
-        self.system.refresh_cpu_all();
-        sleep(Duration::from_millis(200));
-        self.system.refresh_cpu_all();
         let cpus = self.system.cpus();
         let mut freqs: Vec<u64> = Vec::new();
         for c in cpus {
@@ -286,10 +283,6 @@ impl Cpu {
     }
 
     fn get_core_usages(&mut self) {
-        self.system.refresh_cpu_usage();
-        sleep(Duration::from_millis(200));
-        self.system.refresh_cpu_usage();
-
         let cpus = sysinfo::System::cpus(&self.system);
         let mut cpu_usages: Vec<f32> = Vec::new();
 
