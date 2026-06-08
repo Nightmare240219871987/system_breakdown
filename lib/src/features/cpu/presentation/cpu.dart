@@ -1,7 +1,10 @@
+import 'dart:isolate';
+
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:system_breakdown/src/features/cpu/data/util.dart';
+import 'package:system_breakdown/src/features/cpu/domain/core_usage.dart';
+import 'package:system_breakdown/src/features/cpu/domain/util.dart';
 import 'package:system_breakdown/src/rust/api/cpu.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class CPUPage extends StatefulWidget {
   const CPUPage({super.key});
@@ -12,15 +15,23 @@ class CPUPage extends StatefulWidget {
 
 class _CPUPageState extends State<CPUPage> {
   List<List<double>> result = [];
+  List<List<FlSpot>> spots = [];
   late int cores;
-  late bool isRunning;
   Stream<Cpu>? updatePeriodlyStream;
   Future<Cpu>? cpuFuture;
 
   Stream<Cpu> getUpdates() async* {
     Cpu cpu = await cpuFuture!;
-    while (isRunning) {
+    while (mounted) {
       await cpu.fetchData();
+      final coreUsages = cpu.coreUsages.toList();
+      final model = result.map((e) => List<double>.from(e)).toList();
+      final tmp = await Isolate.run(() {
+        final updatedModel = toGraphModel(model, coreUsages);
+        return (spots: toSpots(updatedModel), model: updatedModel);
+      });
+      spots = tmp.spots;
+      result = tmp.model;
       yield cpu;
       await Future.delayed(Duration(milliseconds: 1000));
     }
@@ -29,14 +40,12 @@ class _CPUPageState extends State<CPUPage> {
   @override
   void initState() {
     super.initState();
-    isRunning = true;
-    cpuFuture ??= Cpu.newInstance();
+    cpuFuture = Cpu.newInstance();
     updatePeriodlyStream ??= getUpdates();
   }
 
   @override
   void dispose() {
-    isRunning = false;
     super.dispose();
   }
 
@@ -202,34 +211,21 @@ class _CPUPageState extends State<CPUPage> {
                       GridView.builder(
                         shrinkWrap: true,
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 250,
+                          maxCrossAxisExtent: 320,
                         ),
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: cpu.coreUsages.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "cpu$index",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text("${cpu.coreSpeeds[index]} Mhz"),
-                                SfSparkBarChart(
-                                  key: ValueKey(
-                                    "core${index}_${cpu.coreUsages[index]}",
-                                  ),
-                                  data:
-                                      toGraphModel(
-                                            result,
-                                            cpu.coreUsages,
-                                          )[index]
-                                          as List<num>,
-                                  color: Colors.lightBlue,
-                                  labelDisplayMode:
-                                      SparkChartLabelDisplayMode.none,
-                                ),
-                              ],
+                            child: RepaintBoundary(
+                              child: CoreUsage(
+                                key: ValueKey(index),
+                                index: index,
+                                spots: spots[index],
+
+                                frequency: cpu.coreSpeeds[index],
+                              ),
                             ),
                           );
                         },
