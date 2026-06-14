@@ -13,7 +13,7 @@ class ProcessesPage extends StatefulWidget {
 class _ProcessesPageState extends State<ProcessesPage> {
   late Future<Processes> processesFuture;
   late Stream<List<Process>> processesStream;
-  bool isRunning = false;
+  Processes? _processes;
   List<Process> cachedRaw = [];
   List<Process> cachedSorted = [];
 
@@ -21,9 +21,9 @@ class _ProcessesPageState extends State<ProcessesPage> {
   bool _sortAsc = false;
 
   Stream<List<Process>> getProcessesStream() async* {
-    Processes processes = await processesFuture;
-    while (isRunning) {
-      List<Process> procs = await processes.getAllProcesses();
+    _processes = await processesFuture;
+    while (mounted) {
+      List<Process> procs = await _processes!.getAllProcesses();
       yield procs;
       await Future.delayed(Duration(milliseconds: 1000));
     }
@@ -69,18 +69,47 @@ class _ProcessesPageState extends State<ProcessesPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    isRunning = true;
-    processesFuture = Processes.newInstance();
-    processesStream = getProcessesStream();
+  void onKill(int pid) async {
+    List<Process> procs = await _processes!.getAllProcesses();
+    bool? result;
+    if (mounted) {
+      result = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Benutzer Aktion."),
+            content: Text(
+              "Wollen sie Wirklich den Process '${procs.firstWhere((procs) => procs.pid == pid).name}' mit der PID ${procs.firstWhere((procs) => procs.pid == pid).pid} beenden ?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text("Ja"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text("Nein"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+    if (result!) {
+      _processes!.killProcess(pid: pid);
+      setState(() {});
+    }
   }
 
   @override
-  void dispose() {
-    isRunning = false;
-    super.dispose();
+  void initState() {
+    super.initState();
+    processesFuture = Processes.newInstance();
+    processesStream = getProcessesStream();
   }
 
   @override
@@ -107,7 +136,8 @@ class _ProcessesPageState extends State<ProcessesPage> {
                 child: ListView.builder(
                   itemCount: procs.length,
                   itemExtent: 40,
-                  itemBuilder: (context, index) => CRow(procs[index]),
+                  itemBuilder: (context, index) =>
+                      CRow(procs[index], onKill: onKill),
                 ),
               ),
             ],

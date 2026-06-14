@@ -3,7 +3,8 @@ import 'package:system_breakdown/src/rust/api/process.dart';
 
 class CRow extends StatelessWidget {
   final Process proc;
-  const CRow(this.proc, {super.key});
+  final void Function(int)? onKill;
+  const CRow(this.proc, {super.key, this.onKill});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class CRow extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Text(
-              "${(proc.memory.toDouble() / 1048576).toStringAsFixed(2)} MB",
+              "${(proc.memory.toDouble() / 1048576).toStringAsFixed(2)} MiB",
             ),
           ),
         ),
@@ -39,7 +40,24 @@ class CRow extends StatelessWidget {
             child: Text("${proc.usage.toStringAsFixed(2)}%"),
           ),
         ),
+        Expanded(
+          flex: 2,
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: onPressed,
+                icon: Icon(Icons.cancel_rounded),
+              ),
+            ],
+          ),
+        ),
       ],
     );
+  }
+
+  void onPressed() {
+    if (onKill != null) {
+      onKill!(proc.pid);
+    }
   }
 }

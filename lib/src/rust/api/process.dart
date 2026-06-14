@@ -10,6 +10,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 abstract class Processes implements RustOpaqueInterface {
   Future<List<Process>> getAllProcesses();
 
+  Future<void> killProcess({required int pid});
+
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<Processes> newInstance() =>
       RustLib.instance.api.crateApiProcessProcessesNew();

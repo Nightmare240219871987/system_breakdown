@@ -22,7 +22,7 @@ class CoreUsage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("cpu$index", style: _textStyle),
+        Text("Core $index", style: _textStyle),
         Text("$frequency MHz"),
         AspectRatio(
           aspectRatio: 1.4,

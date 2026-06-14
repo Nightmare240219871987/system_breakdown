@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:system_breakdown/src/rust/api/ram.dart';
 
@@ -9,42 +10,16 @@ class RAMPage extends StatefulWidget {
 }
 
 class _RAMPageState extends State<RAMPage> {
-  late bool isRunning;
-  late Stream<BigInt> usedMemoryStream;
-  late Stream<BigInt> availableMemoryStream;
+  Future<Ram>? futureRam;
+  Stream<Ram>? streamRam;
+  static final TextStyle _textStyle = TextStyle(fontWeight: FontWeight.bold);
 
-  late Stream<BigInt> usedSwapStream;
-  late Stream<BigInt> freeSwapStream;
-
-  Stream<BigInt> getUsedMemoryStream() async* {
-    while (isRunning) {
-      BigInt used = await getUsedMemory();
-      yield used;
-      await Future.delayed(Duration(milliseconds: 500));
-    }
-  }
-
-  Stream<BigInt> getAvailableMemoryStream() async* {
-    while (isRunning) {
-      BigInt available = await getAvailableRam();
-      yield available;
-      await Future.delayed(Duration(milliseconds: 500));
-    }
-  }
-
-  Stream<BigInt> getUsedSwapStream() async* {
-    while (isRunning) {
-      BigInt used = await getUsedSwap();
-      yield used;
-      await Future.delayed(Duration(milliseconds: 500));
-    }
-  }
-
-  Stream<BigInt> getFreeSwapStream() async* {
-    while (isRunning) {
-      BigInt available = await getFreeSwap();
-      yield available;
-      await Future.delayed(Duration(milliseconds: 500));
+  Stream<Ram> getUpdates() async* {
+    Ram ram = await futureRam!;
+    while (mounted) {
+      await ram.fetchData();
+      yield ram;
+      await Future.delayed(Duration(milliseconds: 1000));
     }
   }
 
@@ -54,138 +29,436 @@ class _RAMPageState extends State<RAMPage> {
     return temp.toInt();
   }
 
-  @override
-  void initState() {
-    isRunning = true;
-    usedMemoryStream = getUsedMemoryStream();
-    availableMemoryStream = getAvailableMemoryStream();
-    usedSwapStream = getUsedSwapStream();
-    freeSwapStream = getFreeSwapStream();
-    super.initState();
+  double transferRate(int mt, int dataWidth) {
+    double res = mt * dataWidth / 8 / 1024;
+    return res;
   }
 
   @override
-  void dispose() {
-    isRunning = false;
-    super.dispose();
+  void initState() {
+    super.initState();
+    futureRam = Ram.newInstance();
+    streamRam ??= getUpdates().asBroadcastStream();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Column(
       children: [
-        Column(
+        Text("RAM Nutzung", style: TextStyle(fontWeight: FontWeight.bold)),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const Text("Memory", style: TextStyle(fontWeight: FontWeight.bold)),
-            FutureBuilder(
-              future: getTotalRam(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("");
-                }
-                if (snapshot.hasError) {
-                  return Text("Es ist ein Fehler Passiert : ${snapshot.error}");
-                }
-                if (snapshot.hasData) {
-                  return Text(
-                    "Total Memory : ${bytesToMegabyte(snapshot.data!)} MB",
-                  );
-                }
-                return const Text("Es ist ein Fehler passiert.");
-              },
+            Column(
+              children: [
+                StreamBuilder(
+                  stream: streamRam,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      Ram ram = snapshot.data!;
+                      return SizedBox(
+                        width: 350,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              spacing: 8,
+                              children: [
+                                SizedBox(width: 32),
+                                Text(
+                                  "Arbeitsspeicher gesamt : ${bytesToMegabyte(ram.totalRam)} MiB",
+                                ),
+                              ],
+                            ),
+                            Row(
+                              spacing: 8,
+                              children: [
+                                Container(
+                                  width: 32,
+                                  height: 16,
+                                  color: Colors.red,
+                                ),
+                                Text(
+                                  "Arbeitsspeicher belegt : ${bytesToMegabyte(ram.usedRam)} MiB",
+                                ),
+                              ],
+                            ),
+                            Row(
+                              spacing: 8,
+                              children: [
+                                Container(
+                                  width: 32,
+                                  height: 16,
+                                  color: Colors.lightGreen,
+                                ),
+                                Text(
+                                  "Arbeitsspeicher frei : ${bytesToMegabyte(ram.freeRam)} MiB",
+                                ),
+                              ],
+                            ),
+                            Row(
+                              spacing: 8,
+                              children: [
+                                Container(
+                                  width: 32,
+                                  height: 16,
+                                  color: Colors.green,
+                                ),
+                                Text(
+                                  "Arbeitsspeicher verfügbar : ${bytesToMegabyte(ram.availableRam)} MiB",
+                                ),
+                              ],
+                            ),
+
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 32.0),
+                                child: SizedBox(
+                                  width: 200,
+                                  height: 200,
+                                  child: PieChart(
+                                    PieChartData(
+                                      sectionsSpace: 2,
+                                      centerSpaceRadius: 0,
+                                      titleSunbeamLayout: true,
+                                      sections: [
+                                        PieChartSectionData(
+                                          titleStyle: _textStyle,
+                                          title:
+                                              "${(100.0 / ram.totalRam.toDouble() * ram.usedRam.toDouble()).toStringAsFixed(0)}%",
+                                          color: Colors.red,
+                                          value: bytesToMegabyte(
+                                            ram.usedRam,
+                                          ).toDouble(),
+                                          radius: 100,
+                                        ),
+                                        PieChartSectionData(
+                                          titleStyle: _textStyle,
+                                          title:
+                                              "${(100.0 / ram.totalRam.toDouble() * ram.availableRam.toDouble()).toStringAsFixed(0)}%",
+                                          color: Colors.green,
+                                          value: bytesToMegabyte(
+                                            ram.availableRam - ram.freeRam,
+                                          ).toDouble(),
+                                          radius: 100,
+                                        ),
+                                        PieChartSectionData(
+                                          titleStyle: _textStyle,
+                                          title:
+                                              "${(100.0 / ram.totalRam.toDouble() * ram.freeRam.toDouble()).toStringAsFixed(0)}%",
+                                          color: Colors.lightGreen,
+                                          value: bytesToMegabyte(
+                                            ram.freeRam,
+                                          ).toDouble(),
+                                          radius: 100,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return Text("Etwas ist schief gegangen.");
+                  },
+                ),
+              ],
             ),
-            StreamBuilder(
-              stream: usedMemoryStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("");
-                }
-                if (snapshot.hasError) {
-                  return Text("Es ist ein Fehler passiert : ${snapshot.error}");
-                }
-                if (snapshot.hasData) {
-                  return Text(
-                    "Used Memory : ${bytesToMegabyte(snapshot.data!)} MB",
-                  );
-                }
-                return const Text("Es ist ein Fehler passiert.");
-              },
-            ),
-            StreamBuilder(
-              stream: availableMemoryStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("");
-                }
-                if (snapshot.hasError) {
-                  return Text("Es ist ein Fehler passiert : ${snapshot.error}");
-                }
-                if (snapshot.hasData) {
-                  return Text(
-                    "Available Memory : ${bytesToMegabyte(snapshot.data!)} MB",
-                  );
-                }
-                return const Text("Es ist ein Fehler passiert.");
-              },
+            Column(
+              children: [
+                StreamBuilder(
+                  stream: streamRam,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      Ram ram = snapshot.data!;
+                      return SizedBox(
+                        width: 350,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              spacing: 8,
+                              children: [
+                                SizedBox(width: 32),
+                                Text(
+                                  "Auslagerung gesamt : ${bytesToMegabyte(ram.totalSwap)} MiB",
+                                ),
+                              ],
+                            ),
+                            Row(
+                              spacing: 8,
+                              children: [
+                                Container(
+                                  width: 32,
+                                  height: 16,
+                                  color: Colors.red,
+                                ),
+                                Text(
+                                  "Auslagerung belegt : ${bytesToMegabyte(ram.usedSwap)} MiB",
+                                ),
+                              ],
+                            ),
+                            Row(
+                              spacing: 8,
+                              children: [
+                                Container(
+                                  width: 32,
+                                  height: 16,
+                                  color: Colors.green,
+                                ),
+                                Text(
+                                  "Auslagerung verfügbar : ${bytesToMegabyte(ram.freeSwap)} MiB",
+                                ),
+                              ],
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 48.0),
+                                child: SizedBox(
+                                  width: 200,
+                                  height: 200,
+                                  child: PieChart(
+                                    PieChartData(
+                                      sectionsSpace: 2,
+                                      centerSpaceRadius: 0,
+                                      titleSunbeamLayout: true,
+                                      sections: [
+                                        PieChartSectionData(
+                                          titleStyle: _textStyle,
+                                          title:
+                                              "${(100.0 / ram.totalSwap.toDouble() * ram.usedSwap.toDouble()).toStringAsFixed(0)}%",
+                                          color: Colors.red,
+                                          value: bytesToMegabyte(
+                                            ram.totalRam ~/
+                                                BigInt.from(100) *
+                                                ram.usedSwap,
+                                          ).toDouble(),
+                                          radius: 100,
+                                        ),
+                                        PieChartSectionData(
+                                          titleStyle: _textStyle,
+                                          title:
+                                              "${(100.0 / ram.totalSwap.toDouble() * ram.freeSwap.toDouble()).toStringAsFixed(0)}%",
+                                          color: Colors.green,
+                                          value: bytesToMegabyte(
+                                            ram.freeSwap,
+                                          ).toDouble(),
+                                          radius: 100,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return Text("Etwas ist schief gegangen.");
+                  },
+                ),
+              ],
             ),
           ],
         ),
-        Column(
-          children: [
-            const Text("Swap", style: TextStyle(fontWeight: FontWeight.bold)),
-            FutureBuilder(
-              future: getTotalSwap(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("");
-                }
-                if (snapshot.hasError) {
-                  return Text("Es ist ein Fehler Passiert : ${snapshot.error}");
-                }
-                if (snapshot.hasData) {
-                  return Text(
-                    "Total Swap : ${bytesToMegabyte(snapshot.data!)} MB",
-                  );
-                }
-                return const Text("Es ist ein Fehler passiert.");
-              },
-            ),
-            StreamBuilder(
-              stream: usedSwapStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("");
-                }
-                if (snapshot.hasError) {
-                  return Text("Es ist ein Fehler passiert : ${snapshot.error}");
-                }
-                if (snapshot.hasData) {
-                  return Text(
-                    "Used Swap : ${bytesToMegabyte(snapshot.data!)} MB",
-                  );
-                }
-                return const Text("Es ist ein Fehler passiert.");
-              },
-            ),
-            StreamBuilder(
-              stream: freeSwapStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("");
-                }
-                if (snapshot.hasError) {
-                  return Text("Es ist ein Fehler passiert : ${snapshot.error}");
-                }
-                if (snapshot.hasData) {
-                  return Text(
-                    "Available Swap : ${bytesToMegabyte(snapshot.data!)} MB",
-                  );
-                }
-                return const Text("Es ist ein Fehler passiert.");
-              },
-            ),
-          ],
+        Padding(padding: const EdgeInsets.only(top: 32.0), child: Divider()),
+        Text("Ram Information", style: TextStyle(fontWeight: FontWeight.bold)),
+        StreamBuilder(
+          stream: streamRam,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              Ram ram = snapshot.data!;
+              return Padding(
+                padding: const EdgeInsets.only(top: 32.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Slot 1",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            Text("RAM Typ : "),
+                            Text("${ram.ramType.elementAtOrNull(0)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Soll Takt : "),
+                            Text("${ram.ramSpeed.elementAtOrNull(0)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Ist Takt : "),
+                            Text(
+                              "${ram.ramSpeedConfigured.elementAtOrNull(0)}",
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Bandbreite : "),
+                            Text("${ram.ramBandWidth.elementAtOrNull(0)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Datentransferrate : "),
+                            Text(
+                              "${transferRate(ram.ramSpeedConfigured.elementAt(3).toInt(), ram.ramBandWidth.elementAt(0).toInt())} GiB/s",
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Slot 2",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            Text("RAM Typ : "),
+                            Text("${ram.ramType.elementAtOrNull(1)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Soll Takt : "),
+                            Text("${ram.ramSpeed.elementAtOrNull(1)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Ist Takt : "),
+                            Text(
+                              "${ram.ramSpeedConfigured.elementAtOrNull(1)}",
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Bandbreite : "),
+                            Text("${ram.ramBandWidth.elementAtOrNull(1)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Datentransferrate : "),
+                            Text(
+                              "${transferRate(ram.ramSpeedConfigured.elementAt(3).toInt(), ram.ramBandWidth.elementAt(1).toInt())} GiB/s",
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Slot 3",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            Text("RAM Typ : "),
+                            Text("${ram.ramType.elementAtOrNull(2)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Soll Takt : "),
+                            Text("${ram.ramSpeed.elementAtOrNull(2)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Ist Takt : "),
+                            Text(
+                              "${ram.ramSpeedConfigured.elementAtOrNull(2)}",
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Bandbreite : "),
+                            Text("${ram.ramBandWidth.elementAtOrNull(2)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Datentransferrate : "),
+                            Text(
+                              "${transferRate(ram.ramSpeedConfigured.elementAt(3).toInt(), ram.ramBandWidth.elementAt(2).toInt())} GiB/s",
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Slot 4",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            Text("RAM Typ : "),
+                            Text("${ram.ramType.elementAtOrNull(3)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Soll Takt : "),
+                            Text("${ram.ramSpeed.elementAtOrNull(3)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Ist Takt : "),
+                            Text(
+                              "${ram.ramSpeedConfigured.elementAtOrNull(3)}",
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Bandbreite : "),
+                            Text("${ram.ramBandWidth.elementAtOrNull(3)}"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text("Datentransferrate : "),
+                            Text(
+                              "${transferRate(ram.ramSpeedConfigured.elementAt(3).toInt(), ram.ramBandWidth.elementAt(3).toInt())} GiB/s",
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }
+            return Text(
+              "Es ist etwas schief gelaufen.",
+              style: TextStyle(color: Colors.red),
+            );
+          },
         ),
       ],
     );

@@ -40,4 +40,15 @@ impl Processes {
         }
         procs
     }
+
+    pub fn kill_process(&mut self, pid: u32) {
+        self.system
+            .refresh_processes(sysinfo::ProcessesToUpdate::All, true);
+        let processes = self.system.processes();
+        for (_pid, process) in processes.iter() {
+            if _pid.as_u32() == pid {
+                process.kill();
+            }
+        }
+    }
 }

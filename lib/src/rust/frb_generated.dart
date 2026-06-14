@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => -1679617902;
+  int get rustContentHash => 1642577770;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -184,21 +184,95 @@ abstract class RustLibApi extends BaseApi {
     required Processes that,
   });
 
+  Future<void> crateApiProcessProcessesKillProcess({
+    required Processes that,
+    required int pid,
+  });
+
   Future<Processes> crateApiProcessProcessesNew();
 
-  Future<BigInt> crateApiRamGetAvailableRam();
+  BigInt crateApiRamRamAutoAccessorGetAvailableRam({required Ram that});
 
-  Future<BigInt> crateApiRamGetFreeRam();
+  BigInt crateApiRamRamAutoAccessorGetFreeRam({required Ram that});
 
-  Future<BigInt> crateApiRamGetFreeSwap();
+  BigInt crateApiRamRamAutoAccessorGetFreeSwap({required Ram that});
 
-  Future<BigInt> crateApiRamGetTotalRam();
+  Uint64List crateApiRamRamAutoAccessorGetRamBandWidth({required Ram that});
 
-  Future<BigInt> crateApiRamGetTotalSwap();
+  Uint64List crateApiRamRamAutoAccessorGetRamSpeed({required Ram that});
 
-  Future<BigInt> crateApiRamGetUsedMemory();
+  Uint64List crateApiRamRamAutoAccessorGetRamSpeedConfigured({
+    required Ram that,
+  });
 
-  Future<BigInt> crateApiRamGetUsedSwap();
+  List<String> crateApiRamRamAutoAccessorGetRamType({required Ram that});
+
+  BigInt crateApiRamRamAutoAccessorGetTotalRam({required Ram that});
+
+  BigInt crateApiRamRamAutoAccessorGetTotalSwap({required Ram that});
+
+  BigInt crateApiRamRamAutoAccessorGetUsedRam({required Ram that});
+
+  BigInt crateApiRamRamAutoAccessorGetUsedSwap({required Ram that});
+
+  void crateApiRamRamAutoAccessorSetAvailableRam({
+    required Ram that,
+    required BigInt availableRam,
+  });
+
+  void crateApiRamRamAutoAccessorSetFreeRam({
+    required Ram that,
+    required BigInt freeRam,
+  });
+
+  void crateApiRamRamAutoAccessorSetFreeSwap({
+    required Ram that,
+    required BigInt freeSwap,
+  });
+
+  void crateApiRamRamAutoAccessorSetRamBandWidth({
+    required Ram that,
+    required Uint64List ramBandWidth,
+  });
+
+  void crateApiRamRamAutoAccessorSetRamSpeed({
+    required Ram that,
+    required Uint64List ramSpeed,
+  });
+
+  void crateApiRamRamAutoAccessorSetRamSpeedConfigured({
+    required Ram that,
+    required Uint64List ramSpeedConfigured,
+  });
+
+  void crateApiRamRamAutoAccessorSetRamType({
+    required Ram that,
+    required List<String> ramType,
+  });
+
+  void crateApiRamRamAutoAccessorSetTotalRam({
+    required Ram that,
+    required BigInt totalRam,
+  });
+
+  void crateApiRamRamAutoAccessorSetTotalSwap({
+    required Ram that,
+    required BigInt totalSwap,
+  });
+
+  void crateApiRamRamAutoAccessorSetUsedRam({
+    required Ram that,
+    required BigInt usedRam,
+  });
+
+  void crateApiRamRamAutoAccessorSetUsedSwap({
+    required Ram that,
+    required BigInt usedSwap,
+  });
+
+  Future<void> crateApiRamRamFetchData({required Ram that});
+
+  Future<Ram> crateApiRamRamNew();
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Cpu;
 
@@ -213,6 +287,12 @@ abstract class RustLibApi extends BaseApi {
   get rust_arc_decrement_strong_count_Processes;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ProcessesPtr;
+
+  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Ram;
+
+  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Ram;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_RamPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -1187,6 +1267,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiProcessProcessesKillProcess({
+    required Processes that,
+    required int pid,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProcesses(
+            that,
+            serializer,
+          );
+          sse_encode_u_32(pid, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 32,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiProcessProcessesKillProcessConstMeta,
+        argValues: [that, pid],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiProcessProcessesKillProcessConstMeta =>
+      const TaskConstMeta(
+        debugName: "Processes_kill_process",
+        argNames: ["that", "pid"],
+      );
+
+  @override
   Future<Processes> crateApiProcessProcessesNew() {
     return handler.executeNormal(
       NormalTask(
@@ -1195,7 +1313,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 32,
+            funcId: 33,
             port: port_,
           );
         },
@@ -1215,169 +1333,722 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "Processes_new", argNames: []);
 
   @override
-  Future<BigInt> crateApiRamGetAvailableRam() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  BigInt crateApiRamRamAutoAccessorGetAvailableRam({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
             serializer,
-            funcId: 33,
-            port: port_,
           );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_u_64,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiRamGetAvailableRamConstMeta,
-        argValues: [],
+        constMeta: kCrateApiRamRamAutoAccessorGetAvailableRamConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiRamGetAvailableRamConstMeta =>
-      const TaskConstMeta(debugName: "get_available_ram", argNames: []);
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetAvailableRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_available_ram",
+        argNames: ["that"],
+      );
 
   @override
-  Future<BigInt> crateApiRamGetFreeRam() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  BigInt crateApiRamRamAutoAccessorGetFreeRam({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
             serializer,
-            funcId: 34,
-            port: port_,
           );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 35)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_u_64,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiRamGetFreeRamConstMeta,
-        argValues: [],
+        constMeta: kCrateApiRamRamAutoAccessorGetFreeRamConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiRamGetFreeRamConstMeta =>
-      const TaskConstMeta(debugName: "get_free_ram", argNames: []);
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetFreeRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_free_ram",
+        argNames: ["that"],
+      );
 
   @override
-  Future<BigInt> crateApiRamGetFreeSwap() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  BigInt crateApiRamRamAutoAccessorGetFreeSwap({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
             serializer,
-            funcId: 35,
-            port: port_,
           );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_u_64,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiRamGetFreeSwapConstMeta,
-        argValues: [],
+        constMeta: kCrateApiRamRamAutoAccessorGetFreeSwapConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiRamGetFreeSwapConstMeta =>
-      const TaskConstMeta(debugName: "get_free_swap", argNames: []);
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetFreeSwapConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_free_swap",
+        argNames: ["that"],
+      );
 
   @override
-  Future<BigInt> crateApiRamGetTotalRam() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  Uint64List crateApiRamRamAutoAccessorGetRamBandWidth({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
             serializer,
-            funcId: 36,
-            port: port_,
           );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 37)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_u_64,
+          decodeSuccessData: sse_decode_list_prim_u_64_strict,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiRamGetTotalRamConstMeta,
-        argValues: [],
+        constMeta: kCrateApiRamRamAutoAccessorGetRamBandWidthConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiRamGetTotalRamConstMeta =>
-      const TaskConstMeta(debugName: "get_total_ram", argNames: []);
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetRamBandWidthConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_ram_band_width",
+        argNames: ["that"],
+      );
 
   @override
-  Future<BigInt> crateApiRamGetTotalSwap() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  Uint64List crateApiRamRamAutoAccessorGetRamSpeed({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
             serializer,
-            funcId: 37,
-            port: port_,
           );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 38)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_u_64,
+          decodeSuccessData: sse_decode_list_prim_u_64_strict,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiRamGetTotalSwapConstMeta,
-        argValues: [],
+        constMeta: kCrateApiRamRamAutoAccessorGetRamSpeedConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiRamGetTotalSwapConstMeta =>
-      const TaskConstMeta(debugName: "get_total_swap", argNames: []);
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetRamSpeedConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_ram_speed",
+        argNames: ["that"],
+      );
 
   @override
-  Future<BigInt> crateApiRamGetUsedMemory() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  Uint64List crateApiRamRamAutoAccessorGetRamSpeedConfigured({
+    required Ram that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
             serializer,
-            funcId: 38,
-            port: port_,
           );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 39)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_u_64,
+          decodeSuccessData: sse_decode_list_prim_u_64_strict,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiRamGetUsedMemoryConstMeta,
-        argValues: [],
+        constMeta: kCrateApiRamRamAutoAccessorGetRamSpeedConfiguredConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiRamGetUsedMemoryConstMeta =>
-      const TaskConstMeta(debugName: "get_used_memory", argNames: []);
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetRamSpeedConfiguredConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_ram_speed_configured",
+        argNames: ["that"],
+      );
 
   @override
-  Future<BigInt> crateApiRamGetUsedSwap() {
+  List<String> crateApiRamRamAutoAccessorGetRamType({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 40)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorGetRamTypeConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetRamTypeConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_ram_type",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiRamRamAutoAccessorGetTotalRam({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 41)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorGetTotalRamConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetTotalRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_total_ram",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiRamRamAutoAccessorGetTotalSwap({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 42)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorGetTotalSwapConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetTotalSwapConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_total_swap",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiRamRamAutoAccessorGetUsedRam({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 43)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorGetUsedRamConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetUsedRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_used_ram",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiRamRamAutoAccessorGetUsedSwap({required Ram that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 44)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorGetUsedSwapConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorGetUsedSwapConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_get_used_swap",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetAvailableRam({
+    required Ram that,
+    required BigInt availableRam,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(availableRam, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 45)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetAvailableRamConstMeta,
+        argValues: [that, availableRam],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetAvailableRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_available_ram",
+        argNames: ["that", "availableRam"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetFreeRam({
+    required Ram that,
+    required BigInt freeRam,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(freeRam, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 46)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetFreeRamConstMeta,
+        argValues: [that, freeRam],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetFreeRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_free_ram",
+        argNames: ["that", "freeRam"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetFreeSwap({
+    required Ram that,
+    required BigInt freeSwap,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(freeSwap, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 47)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetFreeSwapConstMeta,
+        argValues: [that, freeSwap],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetFreeSwapConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_free_swap",
+        argNames: ["that", "freeSwap"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetRamBandWidth({
+    required Ram that,
+    required Uint64List ramBandWidth,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_list_prim_u_64_strict(ramBandWidth, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 48)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetRamBandWidthConstMeta,
+        argValues: [that, ramBandWidth],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetRamBandWidthConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_ram_band_width",
+        argNames: ["that", "ramBandWidth"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetRamSpeed({
+    required Ram that,
+    required Uint64List ramSpeed,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_list_prim_u_64_strict(ramSpeed, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 49)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetRamSpeedConstMeta,
+        argValues: [that, ramSpeed],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetRamSpeedConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_ram_speed",
+        argNames: ["that", "ramSpeed"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetRamSpeedConfigured({
+    required Ram that,
+    required Uint64List ramSpeedConfigured,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_list_prim_u_64_strict(ramSpeedConfigured, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 50)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetRamSpeedConfiguredConstMeta,
+        argValues: [that, ramSpeedConfigured],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetRamSpeedConfiguredConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_ram_speed_configured",
+        argNames: ["that", "ramSpeedConfigured"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetRamType({
+    required Ram that,
+    required List<String> ramType,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_list_String(ramType, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 51)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetRamTypeConstMeta,
+        argValues: [that, ramType],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetRamTypeConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_ram_type",
+        argNames: ["that", "ramType"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetTotalRam({
+    required Ram that,
+    required BigInt totalRam,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(totalRam, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 52)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetTotalRamConstMeta,
+        argValues: [that, totalRam],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetTotalRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_total_ram",
+        argNames: ["that", "totalRam"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetTotalSwap({
+    required Ram that,
+    required BigInt totalSwap,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(totalSwap, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 53)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetTotalSwapConstMeta,
+        argValues: [that, totalSwap],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetTotalSwapConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_total_swap",
+        argNames: ["that", "totalSwap"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetUsedRam({
+    required Ram that,
+    required BigInt usedRam,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(usedRam, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 54)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetUsedRamConstMeta,
+        argValues: [that, usedRam],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetUsedRamConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_used_ram",
+        argNames: ["that", "usedRam"],
+      );
+
+  @override
+  void crateApiRamRamAutoAccessorSetUsedSwap({
+    required Ram that,
+    required BigInt usedSwap,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(usedSwap, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 55)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamAutoAccessorSetUsedSwapConstMeta,
+        argValues: [that, usedSwap],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamAutoAccessorSetUsedSwapConstMeta =>
+      const TaskConstMeta(
+        debugName: "Ram_auto_accessor_set_used_swap",
+        argNames: ["that", "usedSwap"],
+      );
+
+  @override
+  Future<void> crateApiRamRamFetchData({required Ram that}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+            that,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 56,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRamRamFetchDataConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRamRamFetchDataConstMeta =>
+      const TaskConstMeta(debugName: "Ram_fetch_data", argNames: ["that"]);
+
+  @override
+  Future<Ram> crateApiRamRamNew() {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -1385,23 +2056,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 39,
+            funcId: 57,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_u_64,
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiRamGetUsedSwapConstMeta,
+        constMeta: kCrateApiRamRamNewConstMeta,
         argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiRamGetUsedSwapConstMeta =>
-      const TaskConstMeta(debugName: "get_used_swap", argNames: []);
+  TaskConstMeta get kCrateApiRamRamNewConstMeta =>
+      const TaskConstMeta(debugName: "Ram_new", argNames: []);
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Cpu => wire
@@ -1419,6 +2091,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   get rust_arc_decrement_strong_count_Processes => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProcesses;
 
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_Ram => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_Ram => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam;
+
   @protected
   Cpu
   dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
@@ -1435,6 +2115,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return ProcessesImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Ram
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RamImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1456,12 +2145,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Ram
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Cpu
   dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return CpuImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Ram
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RamImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1483,6 +2190,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Ram
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
@@ -1498,6 +2214,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double dco_decode_f_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
   }
 
   @protected
@@ -1593,6 +2315,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Ram
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Cpu
   sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
     SseDeserializer deserializer,
@@ -1617,12 +2351,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Ram
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Cpu
   sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return CpuImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  Ram
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RamImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -1653,6 +2411,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Ram
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
@@ -1669,6 +2439,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double sse_decode_f_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getFloat32();
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -1782,6 +2564,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    Ram self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RamImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
     Cpu self,
     SseSerializer serializer,
@@ -1808,6 +2603,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    Ram self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RamImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCpu(
     Cpu self,
     SseSerializer serializer,
@@ -1815,6 +2623,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as CpuImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    Ram self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RamImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -1846,6 +2667,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRam(
+    Ram self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RamImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
@@ -1861,6 +2695,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_f_32(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putFloat32(self);
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
   }
 
   @protected
@@ -2099,4 +2942,105 @@ class ProcessesImpl extends RustOpaque implements Processes {
 
   Future<List<Process>> getAllProcesses() =>
       RustLib.instance.api.crateApiProcessProcessesGetAllProcesses(that: this);
+
+  Future<void> killProcess({required int pid}) => RustLib.instance.api
+      .crateApiProcessProcessesKillProcess(that: this, pid: pid);
+}
+
+@sealed
+class RamImpl extends RustOpaque implements Ram {
+  // Not to be used by end users
+  RamImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  RamImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Ram,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Ram,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_RamPtr,
+  );
+
+  BigInt get availableRam => RustLib.instance.api
+      .crateApiRamRamAutoAccessorGetAvailableRam(that: this);
+
+  BigInt get freeRam =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetFreeRam(that: this);
+
+  BigInt get freeSwap =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetFreeSwap(that: this);
+
+  Uint64List get ramBandWidth => RustLib.instance.api
+      .crateApiRamRamAutoAccessorGetRamBandWidth(that: this);
+
+  Uint64List get ramSpeed =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetRamSpeed(that: this);
+
+  Uint64List get ramSpeedConfigured => RustLib.instance.api
+      .crateApiRamRamAutoAccessorGetRamSpeedConfigured(that: this);
+
+  List<String> get ramType =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetRamType(that: this);
+
+  BigInt get totalRam =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetTotalRam(that: this);
+
+  BigInt get totalSwap =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetTotalSwap(that: this);
+
+  BigInt get usedRam =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetUsedRam(that: this);
+
+  BigInt get usedSwap =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorGetUsedSwap(that: this);
+
+  set availableRam(BigInt availableRam) =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorSetAvailableRam(
+        that: this,
+        availableRam: availableRam,
+      );
+
+  set freeRam(BigInt freeRam) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetFreeRam(that: this, freeRam: freeRam);
+
+  set freeSwap(BigInt freeSwap) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetFreeSwap(that: this, freeSwap: freeSwap);
+
+  set ramBandWidth(Uint64List ramBandWidth) =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorSetRamBandWidth(
+        that: this,
+        ramBandWidth: ramBandWidth,
+      );
+
+  set ramSpeed(Uint64List ramSpeed) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetRamSpeed(that: this, ramSpeed: ramSpeed);
+
+  set ramSpeedConfigured(Uint64List ramSpeedConfigured) =>
+      RustLib.instance.api.crateApiRamRamAutoAccessorSetRamSpeedConfigured(
+        that: this,
+        ramSpeedConfigured: ramSpeedConfigured,
+      );
+
+  set ramType(List<String> ramType) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetRamType(that: this, ramType: ramType);
+
+  set totalRam(BigInt totalRam) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetTotalRam(that: this, totalRam: totalRam);
+
+  set totalSwap(BigInt totalSwap) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetTotalSwap(that: this, totalSwap: totalSwap);
+
+  set usedRam(BigInt usedRam) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetUsedRam(that: this, usedRam: usedRam);
+
+  set usedSwap(BigInt usedSwap) => RustLib.instance.api
+      .crateApiRamRamAutoAccessorSetUsedSwap(that: this, usedSwap: usedSwap);
+
+  Future<void> fetchData() =>
+      RustLib.instance.api.crateApiRamRamFetchData(that: this);
 }

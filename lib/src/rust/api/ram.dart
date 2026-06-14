@@ -6,18 +6,56 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<BigInt> getTotalRam() => RustLib.instance.api.crateApiRamGetTotalRam();
+// These functions are ignored because they are not marked as `pub`: `get_ram_band_width`, `get_ram_speed_configured`, `get_ram_speed_current`, `get_ram_type`
 
-Future<BigInt> getFreeRam() => RustLib.instance.api.crateApiRamGetFreeRam();
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Ram>>
+abstract class Ram implements RustOpaqueInterface {
+  BigInt get availableRam;
 
-Future<BigInt> getAvailableRam() =>
-    RustLib.instance.api.crateApiRamGetAvailableRam();
+  BigInt get freeRam;
 
-Future<BigInt> getUsedMemory() =>
-    RustLib.instance.api.crateApiRamGetUsedMemory();
+  BigInt get freeSwap;
 
-Future<BigInt> getTotalSwap() => RustLib.instance.api.crateApiRamGetTotalSwap();
+  Uint64List get ramBandWidth;
 
-Future<BigInt> getFreeSwap() => RustLib.instance.api.crateApiRamGetFreeSwap();
+  Uint64List get ramSpeed;
 
-Future<BigInt> getUsedSwap() => RustLib.instance.api.crateApiRamGetUsedSwap();
+  Uint64List get ramSpeedConfigured;
+
+  List<String> get ramType;
+
+  BigInt get totalRam;
+
+  BigInt get totalSwap;
+
+  BigInt get usedRam;
+
+  BigInt get usedSwap;
+
+  set availableRam(BigInt availableRam);
+
+  set freeRam(BigInt freeRam);
+
+  set freeSwap(BigInt freeSwap);
+
+  set ramBandWidth(Uint64List ramBandWidth);
+
+  set ramSpeed(Uint64List ramSpeed);
+
+  set ramSpeedConfigured(Uint64List ramSpeedConfigured);
+
+  set ramType(List<String> ramType);
+
+  set totalRam(BigInt totalRam);
+
+  set totalSwap(BigInt totalSwap);
+
+  set usedRam(BigInt usedRam);
+
+  set usedSwap(BigInt usedSwap);
+
+  Future<void> fetchData();
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<Ram> newInstance() => RustLib.instance.api.crateApiRamRamNew();
+}

@@ -17,6 +17,7 @@ class Header extends StatelessWidget {
           HeaderCell("Name", 1, 3, sortColIndex, sortAsc, onSort),
           HeaderCell("Speicher", 2, 2, sortColIndex, sortAsc, onSort),
           HeaderCell("CPU", 3, 2, sortColIndex, sortAsc, onSort),
+          HeaderCell("Actions", 4, 2, -1, false, null),
         ],
       ),
     );

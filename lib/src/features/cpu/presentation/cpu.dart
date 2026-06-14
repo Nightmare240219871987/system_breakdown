@@ -115,18 +115,18 @@ class _CPUPageState extends State<CPUPage> {
                             "L1 Cache",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Text("${bytesToMegabyte(cpu.l1Cache)} KB"),
+                          Text("${bytesToMegabyte(cpu.l1Cache)} KiB"),
                           Text(
                             "L2 Cache",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Text("${bytesToMegabyte(cpu.l2Cache)} KB"),
+                          Text("${bytesToMegabyte(cpu.l2Cache)} KiB"),
                           Text(
                             "L3 Cache",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            "${bytesToMegabyte(cpu.l3Cache)} KB (${bytesToMegabyte(cpu.l3Cache) ~/ cpu.cpuCores.toInt()} KB)",
+                            "${bytesToMegabyte(cpu.l3Cache)} KiB (${bytesToMegabyte(cpu.l3Cache) ~/ cpu.cpuCores.toInt()} KiB)",
                           ),
                         ],
                       ),

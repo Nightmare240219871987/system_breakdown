@@ -6,7 +6,7 @@ class HeaderCell extends StatelessWidget {
   final int flex;
   final int sortColIndex;
   final bool sortAsc;
-  final Function(int, bool) onSort;
+  final Function(int, bool)? onSort;
   const HeaderCell(
     this.label,
     this.colIndex,
@@ -23,7 +23,9 @@ class HeaderCell extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: InkWell(
-        onTap: () => onSort(colIndex, isActive ? !sortAsc : true),
+        onTap: () => onSort != null
+            ? onSort!(colIndex, isActive ? !sortAsc : true)
+            : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
           child: Row(
